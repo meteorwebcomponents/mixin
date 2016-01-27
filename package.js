@@ -1,9 +1,9 @@
 Package.describe({
   name: 'mwc:mixin',
-  version: '1.0.1',
+  version: '1.0.2',
   summary: 'Reactive Data Mixin For Polymer',
     git: "https://github.com/meteorwebcomponents/mixin.git",
-  documentation: null
+  documentation: "README.md"
 });
 
 Package.onUse(function(api) {
