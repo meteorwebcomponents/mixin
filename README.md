@@ -1,7 +1,7 @@
 # Mixin
 
 
-##What is mwc mixin?
+## What is mwc mixin?
 
 mwcMixin is a reactive meteor data source for polymer elements. It is inspired from meteor react packages. Objective is to use use the
 reactive meteor collections inside polymer elements.
@@ -25,18 +25,16 @@ Add mwcMixin behavior.
         behaviors:[mwcMixin],
    
         mwcSubscribe: function() {
-          Meteor.subscribe("_task");
-          Meteor.subscribe("_task_type");
+          Meteor.subscribe("collectionName");
         },
 
         getMeteorData: function() {
           return {
-            _task: _task.find().fetch(),
-            _task_type:_task_type.find().fetch()
+            collectionName:collectionName.find(options).fetch()
           };
         }
       })
 ```
 
 `this.mwcData` contains collections which are reactive. Use it as
-{{mwcData.collection_name}}
+`{{mwcData.collectionName}}`
