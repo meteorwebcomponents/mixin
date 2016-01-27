@@ -1,56 +1,39 @@
-mwcMixin = {
+window.mwcMixin = {
 
-    properties: {
-      mwcData:{type:Object}
-    },
+  properties: {
+    mwcData:{type:Object}
+  },
 
-    ready:function(){
-    },
-    setData:function(data){
-      this.set("mwcData",data);
-    },
-    attached: function() {
-      var self = this;
+  ready:function(){
+  },
+  setData:function(data){
+    this.set("mwcData",data);
+  },
+  attached: function() {
+    var self = this;
 
-      self._mwcStateDep = new Tracker.Dependency();
-      self._mwcFirstRun = true;
+    self._mwcStateDep = new Tracker.Dependency();
+    self._mwcFirstRun = true;
 
-      if (Meteor.isClient) {
-        Tracker.autorun(function(computation) {
-          self._mwcComputation = computation;
-          self._mwcStateDep.depend();
+    Tracker.autorun(function(computation) {
+      self._mwcComputation = computation;
+      self._mwcStateDep.depend();
 
-          if (self.mwcSubscribe) {
-            self.mwcSubscribe();
-          }
-
-          mwcDataUpdate(self);
-        });
-
-      } else {
-        mwcDataUpdate(self);
+      if (self.mwcSubscribe) {
+        self.mwcSubscribe();
       }
 
-    },
-    detatched:function(){
-      if (this._mwcComputation) {
-        this._mwcComputation.stop();
-        this._mwcComputation = null;
-      }
-
-    },
-    attributeChanged:function(name,type){
-      if (this._mwcCalledSetData) {
-        this._mwcCalledSetData = false;
-        return;
-      }
-
-      if (this._mwcStateDep) {
-        this._mwcStateDep.changed();
-      }
+      mwcDataUpdate(self);
+    });
+  },
+  detatched:function(){
+    if (this._mwcComputation) {
+      this._mwcComputation.stop();
+      this._mwcComputation = null;
     }
 
-  };
+  }
+};
 
 function mwcDataUpdate(element) {
   var partialState =
@@ -73,5 +56,6 @@ function mwcDataUpdate(element) {
     element.setData(partialState);
   });
 }
+
 
 

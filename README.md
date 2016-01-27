@@ -19,7 +19,7 @@ Add mwcMixin behavior.
 
 ```js
      Polymer({
-        is: "task-items",
+        is: "custom-elements",
         properties: {
         },
         behaviors:[mwcMixin],
@@ -38,3 +38,4 @@ Add mwcMixin behavior.
 
 `this.mwcData` contains collections which are reactive. Use it as
 `{{mwcData.collectionName}}`
+
