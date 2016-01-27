@@ -1,4 +1,4 @@
-window.mwcMixin = {
+mwcMixin = {
 
   properties: {
     mwcData:{type:Object}
