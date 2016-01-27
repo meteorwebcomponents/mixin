@@ -54,8 +54,8 @@ mwcMixin = {
 
 function mwcDataUpdate(element) {
   var partialState =
-    element.getMeteorState &&
-    element.getMeteorState();
+    element.getMeteorData &&
+    element.getMeteorData();
 
   if (! partialState) {
     return;
