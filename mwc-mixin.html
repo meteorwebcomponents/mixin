@@ -33,18 +33,7 @@ window.mwcMixin = {
       this._mwcComputation = null;
     }
 
-  },
-  attributeChanged:function(name,type){
-    if (this._mwcCalledSetData) {
-      this._mwcCalledSetData = false;
-      return;
-    }
-
-    if (this._mwcStateDep) {
-      this._mwcStateDep.changed();
-    }
   }
-
 };
 
 function mwcDataUpdate(element) {
@@ -68,6 +57,7 @@ function mwcDataUpdate(element) {
     element.setData(partialState);
   });
 }
+
 
 
 </script>

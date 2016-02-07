@@ -57,5 +57,3 @@ function mwcDataUpdate(element) {
   });
 }
 
-
-

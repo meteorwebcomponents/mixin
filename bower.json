@@ -7,12 +7,9 @@
       "mwc-mixin.html"
     ],
     "name": "mwc-mixin",
-    "dependencies": {
-      "mwc-layout": "~1.0"
-    },
     "repository": {
       "type": "git",
       "url": "https://github.com/meteorwebcomponents/mixin.git"
     },
-    "version": "1.0.5"
+    "version": "1.0.6"
 }
