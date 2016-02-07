@@ -39,3 +39,11 @@ Add mwcMixin behavior.
 `this.mwcData` contains collections which are reactive. Use it as
 `{{mwcData.collectionName}}`
 
+
+##Related Projects
+
+[MWC Compiler](https://github.com/meteorwebcomponents/compiler) - Compiler for polymer/webcomponents in meteor.
+
+[MWC Layout](https://github.com/meteorwebcomponents/layout) - polymer layout renderer
+
+[mwc flowrouter demo](https://github.com/meteorwebcomponents/demo-flowrouter) - mwc demo with flowrouter as the default router
