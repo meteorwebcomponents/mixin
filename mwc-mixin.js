@@ -20,6 +20,7 @@ mwcMixin = {
       self._mwcStateDep.depend();
 
       if (self.mwcSubscribe) {
+        console.warn("mwcSubscribe is deprecated. Subscribe inside getMeteorData. https://github.com/meteorwebcomponents/mixin/blob/master/README.md");
         self.mwcSubscribe();
       }
 
