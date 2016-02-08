@@ -56,6 +56,7 @@ FlowRouter.route("/post/:_id", {
 
 Polymer({
     is: "post-view",
+    behaviors:[mwcMixin],
     mwcSubscribe: function() {
     var postId = FlowRouter.getParam('_id'); //reactive
     // Subscription : all posts. But comments of the current post only.
