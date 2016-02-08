@@ -54,7 +54,7 @@ FlowRouter.route("/post/:_id", {
 Polymer({
     is: "post-view",
     behaviors:[mwcMixin], /***** IMPORTANT *****/
-    properties:{postId:{type:String},
+    properties:{postId:{type:String}},
 
     getMeteorData: function() {
         var postId = FlowRouter.getParam('_id');
