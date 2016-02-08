@@ -23,12 +23,9 @@ Add mwcMixin behavior.
         properties: {
         },
         behaviors:[mwcMixin],
-   
-        mwcSubscribe: function() {
-          Meteor.subscribe("collectionName");
-        },
 
         getMeteorData: function() {
+        Meteor.subscribe("collectionName");
           return {
             collectionName:collectionName.find(options).fetch()
           };
@@ -57,17 +54,15 @@ FlowRouter.route("/post/:_id", {
 Polymer({
     is: "post-view",
     behaviors:[mwcMixin], /***** IMPORTANT *****/
-    properties:{postId:{type:String}}
-    mwcSubscribe: function() {
-    var postId = FlowRouter.getParam('_id'); //reactive
-    // Subscription : all posts. But comments of the current post only.
-        Meteor.subscribe("post");
-        Meteor.subscribe("comment",{"post_id":postId});
-    },
+    properties:{postId:{type:String},
 
     getMeteorData: function() {
         var postId = FlowRouter.getParam('_id');
-        this.set('postId',postId); //you can set properties from here.
+         // Subscription : all posts. But comments of the current post only.
+        Meteor.subscribe("post");
+        Meteor.subscribe("comment",{"post_id":postId});
+        
+        this.set('postId',postId); //you can even set properties from here.
         // return object is set as this.mwcData¬
         return {
             post: post.find({
