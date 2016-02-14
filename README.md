@@ -1,6 +1,6 @@
 <!--
   Title: Meteor Webcomponents Mixin, for Meteor Polymer integration
-  Description: Compiler for polymer/webcomponents in meteor.
+  Description: Mixin for polymer/webcomponents in meteor.
   -->
 # Mixin
 
