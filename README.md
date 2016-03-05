@@ -80,6 +80,8 @@ Polymer({
 
 ```
 
+[Advanced Example](https://github.com/HedCET/TorrentAlert)
+
 ##Related Projects
 
 [MWC Compiler](https://github.com/meteorwebcomponents/compiler) - Compiler for polymer/webcomponents in meteor.
