@@ -18,6 +18,12 @@ mwcMixin = {
       self.__mwcStateDep.depend();
       mwcDataUpdate(self);
     });
+    //if no subscriptions are made make subsReady true.
+    //this is to give user an users an option to subscribe after attaching the element. load spinner only during subscriptions.
+    if(!self.__handles.length){
+      self.set("subsReady",true);
+    }
+
   },
   detatched:function(){
     if (this.__mwcComputation) {
@@ -32,6 +38,7 @@ mwcMixin = {
     self.set("subsReady",false);
     var handle = Meteor.subscribe.apply(null,arguments);
     self.__handles.push(handle);
+
     var subsReady = function() {
       var isReady =  _.every(self.__handles, function(sub) {
         return sub && sub.ready();
