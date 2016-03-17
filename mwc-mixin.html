@@ -1,11 +1,10 @@
 <script>
+
 window.mwcMixin = {
 
   properties: {
+    subsReady:{type:Boolean},
     mwcData:{type:Object}
-  },
-
-  ready:function(){
   },
   setData:function(data){
     this.set("mwcData",data);
@@ -13,49 +12,62 @@ window.mwcMixin = {
   attached: function() {
     var self = this;
 
-    self._mwcStateDep = new Tracker.Dependency();
-    self._mwcFirstRun = true;
+    self.__mwcStateDep = new Tracker.Dependency();
+    self.__mwcFirstRun = true;
 
     Tracker.autorun(function(computation) {
-      self._mwcComputation = computation;
-      self._mwcStateDep.depend();
-
-      if (self.mwcSubscribe) {
-        console.warn("mwcSubscribe is deprecated. Subscribe inside getMeteorData. https://github.com/meteorwebcomponents/mixin/blob/master/README.md");
-        self.mwcSubscribe();
-      }
-
+      self.__mwcComputation = computation;
+      self.__mwcStateDep.depend();
       mwcDataUpdate(self);
     });
   },
   detatched:function(){
-    if (this._mwcComputation) {
-      this._mwcComputation.stop();
-      this._mwcComputation = null;
+    if (this.__mwcComputation) {
+      this.__mwcComputation.stop();
+      this.__mwcComputation = null;
     }
 
-  }
+  },
+  subscribe:function(){
+    self = this;
+    self.__mwcStateDep.depend();
+
+    var handle = Meteor.subscribe.apply(null,arguments);
+    self.__handles.push(handle);
+    var subsReady = function() {
+      var isReady =  _.every(self.__handles, function(sub) {
+        return sub && sub.ready();
+      });
+
+      return isReady;
+    };
+    Tracker.autorun(function(c) {
+      if (subsReady()) {
+        c.stop();
+      }
+    });
+    return handle;
+  },
+  getMeteorData:function(){
+  },
+  __handles:[]
 };
 
 function mwcDataUpdate(element) {
-  var partialState =
-    element.getMeteorData &&
-    element.getMeteorData();
+  var data = element.getMeteorData();
 
-  if (! partialState) {
+  if (!data) {
     return;
   }
 
-  if (element._mwcFirstRun) {
-    element._mwcFirstRun = false;
-    element._mwcCalledSetData = true;
-    element.setData(partialState);
+  if (element.__mwcFirstRun) {
+    element.__mwcFirstRun = false;
+    element.setData(data);
     return;
   }
 
   Tracker.afterFlush(function() {
-    element._mwcCalledSetData = true;
-    element.setData(partialState);
+    element.setData(data);
   });
 }
 

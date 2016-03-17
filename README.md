@@ -26,13 +26,15 @@ Add mwcMixin behavior.
         behaviors:[mwcMixin],
 
         getMeteorData: function() {
-        Meteor.subscribe("collectionName");
+        this.subscribe("collectionName");
           return {
             collectionName:collectionName.find(options).fetch()
           };
         }
       })
 ```
+
+`this.subsReady` changes to `true` when your subscription is complete.
 
 `this.mwcData` contains collections which are reactive. Use it as
 `{{mwcData.collectionName}}`
@@ -62,12 +64,12 @@ Polymer({
         var postId = FlowRouter.getParam('_id'); // getParam is reactive.
         
         //setting properties
-        Meteor.subscribe("userlist");
+        this.subscribe("userlist");
         this.set('userlist',Meteor.users.find().fetch());
         
         //setting property mwcData. collection can be accessed as mwcData.collectionName.
-        Meteor.subscribe("post"); //all posts
-        Meteor.subscribe("comment",{"post_id":postId}); //comments of the current post only.
+        this.subscribe("post"); //all posts
+        this.subscribe("comment",{"post_id":postId}); //comments of the current post only.
         // return object is set as this.mwcData¬
         return {
             post: post.find({
@@ -77,6 +79,18 @@ Polymer({
         };
     }
 });
+
+```
+
+```html
+
+...
+
+<template is="dom-if" if="{{!subsReady}}">
+Loading Subscriptions..
+</template>
+
+...
 
 ```
 
