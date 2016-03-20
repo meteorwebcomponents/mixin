@@ -10,14 +10,23 @@
 mwcMixin is a reactive meteor data source for polymer elements. It is inspired from meteor react packages. Objective is to use use the
 reactive meteor collections inside polymer elements.
 
-## How to use it ?
+## Installation
 
-
+### Method 1 - Meteor Package
 Add `mwc:mixin` package to your Meteor App. Add `mwcMixin` behavior to your component behaviors. ie. `behaviors:[mwcMixin]`
 
 ```sh
     $ meteor add mwc:mixin
 ```
+### Method 2 - Using bower
+
+```sh
+bower install mwc-mixin --save
+```
+import mwc-mixin.html file.
+
+## How to use it ?
+
 Add mwcMixin behavior.
 
 ```js
