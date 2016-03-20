@@ -13,7 +13,7 @@ reactive meteor collections inside polymer elements.
 ## Installation
 
 ### Method 1 - Meteor Package
-Add `mwc:mixin` package to your Meteor App. Add `mwcMixin` behavior to your component behaviors. ie. `behaviors:[mwcMixin]`
+Add `mwc:mixin` package to your Meteor App.
 
 ```sh
 $ meteor add mwc:mixin
@@ -27,7 +27,7 @@ import mwc-mixin.html file.
 
 ## How to use it ?
 
-Add mwcMixin behavior.
+Add `mwcMixin` behavior to your component behaviors. ie. `behaviors:[mwcMixin]`
 
 ```js
      Polymer({
