@@ -3,7 +3,7 @@ mwcMixin = {
   properties: {
     subsReady:{type:Boolean,value:false},
     mwcData:Object,
-    __handles:Array
+    __handles:{type:Array,value:[]}
   },
   setData:function(data){
     this.set("mwcData",data);
@@ -38,7 +38,9 @@ mwcMixin = {
     self.__mwcStateDep.depend();
     self.set("subsReady",false);
     var handle = Meteor.subscribe.apply(null,arguments);
-    self.push("__handles",handle);
+    var handles = _.clone(self.__handles);
+    handles.push(handle);
+    self.set("__handles",handles);
 
     var subsReady = function() {
       var isReady =  _.every(self.__handles, function(sub) {
