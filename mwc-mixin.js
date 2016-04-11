@@ -3,7 +3,7 @@ mwcMixin = {
   properties: {
     subsReady:{type:Boolean,value:false},
     mwcData:Object,
-    __handles:Array
+    __handles:{type:Array,value:[]}
   },
   setData:function(data){
     this.set("mwcData",data);
