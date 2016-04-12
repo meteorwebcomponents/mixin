@@ -1,7 +1,7 @@
 mwcMixin = {
 
   properties: {
-    subsReady:{type:Boolean,value:false},
+    subsReady:{type:Boolean,computed:"_subsReady(__handles)"},
     mwcData:Object,
     __handles:{type:Array,value:[]}
   },
@@ -19,12 +19,6 @@ mwcMixin = {
       self.__mwcStateDep.depend();
       mwcDataUpdate(self);
     });
-    //if no subscriptions are made make subsReady true.
-    //this is to give user an users an option to subscribe after attaching the element. load spinner only during subscriptions.
-    if(!self.__handles.length){
-      self.set("subsReady",true);
-    }
-
   },
   detatched:function(){
     if (this.__mwcComputation) {
@@ -35,28 +29,35 @@ mwcMixin = {
   },
   subscribe:function(){
     self = this;
-    self.__mwcStateDep.depend();
-    self.set("subsReady",false);
     var handle = Meteor.subscribe.apply(null,arguments);
     var handles = _.clone(self.__handles);
     handles.push(handle);
     self.set("__handles",handles);
 
-    var subsReady = function() {
-      var isReady =  _.every(self.__handles, function(sub) {
-        return sub && sub.ready();
-      });
-
-      return isReady;
-    };
     Tracker.autorun(function(c) {
-      if (subsReady()) {
-        self.set("subsReady",true);
-        c.stop();
+      try{
+        if (handle.ready()) {
+          self.set("__handles",_.reject(_.clone(self.__handles),function(h){
+            return h.subscriptionId = handle.subscriptionId;
+          }));
+          c.stop();
+        }
       }
+      catch(err){
+        console.log(err);
+      }
+
     });
     return handle;
   },
+  _subsReady : function(__h) {
+    var isReady =  _.every(__h, function(sub) {
+      return sub && sub.ready();
+    });
+
+    return isReady;
+  },
+
   getMeteorData:function(){
   }
 };
