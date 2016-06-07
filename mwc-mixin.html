@@ -61,12 +61,17 @@ window.mwcMixin = {
   },
 
   getMeteorData:function(){
-  }
+  },
+  tracker:function(){
+  
+  }//
 };
 
 function mwcDataUpdate(element) {
-  var data = element.getMeteorData();
-
+  var data = element.tracker() || element.getMeteorData();
+//  if(element.getMeteorData()){
+//  console.log("Use tracker instead of getMeteorData");
+//  }
   if (!data) {
     return;
   }
@@ -81,6 +86,5 @@ function mwcDataUpdate(element) {
     element.setData(data);
   });
 }
-
 
 </script>
