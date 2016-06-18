@@ -27,6 +27,9 @@ window.mwcMixin = {
       this.__mwcComputation.stop();
       this.__mwcComputation = null;
     }
+    this.__handles.forEach(function(h){
+      h.stop();
+    });
 
   },
   subscribe:function(){
@@ -63,15 +66,15 @@ window.mwcMixin = {
   getMeteorData:function(){
   },
   tracker:function(){
-  
+
   }//
 };
 
 function mwcDataUpdate(element) {
   var data = element.tracker() || element.getMeteorData();
-//  if(element.getMeteorData()){
-//  console.log("Use tracker instead of getMeteorData");
-//  }
+  //  if(element.getMeteorData()){
+  //  console.log("Use tracker instead of getMeteorData");
+  //  }
   if (!data) {
     return;
   }

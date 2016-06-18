@@ -25,6 +25,9 @@ mwcMixin = {
       this.__mwcComputation.stop();
       this.__mwcComputation = null;
     }
+    this.__handles.forEach(function(h){
+      h.stop();
+    });
 
   },
   subscribe:function(){
@@ -61,16 +64,16 @@ mwcMixin = {
   getMeteorData:function(){
   },
   tracker:function(){
-  
+
   }//
 };
 
 function mwcDataUpdate(element) {
   var data = element.getMeteorData();
-element.tracker();
-//  if(element.getMeteorData()){
-//  console.log("Use tracker instead of getMeteorData");
-//  }
+  element.tracker();
+  //  if(element.getMeteorData()){
+  //  console.log("Use tracker instead of getMeteorData");
+  //  }
   if (!data) {
     return;
   }
