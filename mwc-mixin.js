@@ -1,7 +1,7 @@
 mwcMixin = {
 
   properties: {
-    subsReady:{type:Boolean,computed:"_subsReady(__handles)"},
+    subsReady:{type:Boolean,notify:true,computed:"_subsReady(__handles)"},
     mwcData:Object,
     __handles:{type:Array,value:[]}
   },
