@@ -11,6 +11,7 @@ mwcMixin = {
   attached: function() {
     var self = this;
 
+    self.__mwcDep = new Tracker.Dependency();
     self.__mwcDataDep = new Tracker.Dependency();
     self.__mwcFirstRun = true;
     Tracker.autorun(function(c) {
