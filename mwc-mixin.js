@@ -11,16 +11,24 @@ mwcMixin = {
   attached: function() {
     var self = this;
 
-    self.__mwcStateDep = new Tracker.Dependency();
+    self.__mwcDataDep = new Tracker.Dependency();
     self.__mwcFirstRun = true;
-
     Tracker.autorun(function(c) {
       self.__mwcComputation = c;
-      self.__mwcStateDep.depend();
+      self.__mwcDep.depend();
+      self.tracker();
+    });
+    Tracker.autorun(function(c) {
+      self.__mwcDataComputation = c;
+      self.__mwcDataDep.depend();
       mwcDataUpdate(self);
     });
   },
   detatched:function(){
+    if (this.__mwcDataComputation) {
+      this.__mwcDataComputation.stop();
+      this.__mwcDataComputation = null;
+    }
     if (this.__mwcComputation) {
       this.__mwcComputation.stop();
       this.__mwcComputation = null;
@@ -67,10 +75,8 @@ mwcMixin = {
 
   }//
 };
-
 function mwcDataUpdate(element) {
   var data = element.getMeteorData();
-  element.tracker();
   //  if(element.getMeteorData()){
   //  console.log("Use tracker instead of getMeteorData");
   //  }
