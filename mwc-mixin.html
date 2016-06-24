@@ -3,83 +3,115 @@
 window.mwcMixin = {
 
   properties: {
-    subsReady:{type:Boolean,notify:true,computed:"_subsReady(__handles)"},
+    subsReady:{type:Boolean,notify:true,value:true},
+
     mwcData:Object,
-    __handles:{type:Array,value:[]}
+    __handles:{type:Array,value:[]},
+    __computations:{type:Array,value:[]},
+    __computationsIds:{type:Array,value:[]},
+    __mwcBin:{type:Array,value:[]}
   },
-  setData:function(data){
+  setData(data){
     this.set("mwcData",data);
   },
-  attached: function() {
-    var self = this;
-
-    self.__mwcDep = new Tracker.Dependency();
-    self.__mwcDataDep = new Tracker.Dependency();
-    self.__mwcFirstRun = true;
-    Tracker.autorun(function(c) {
-      self.__mwcComputation = c;
-      self.__mwcDep.depend();
-      self.tracker();
-    });
-    Tracker.autorun(function(c) {
-      self.__mwcDataComputation = c;
-      self.__mwcDataDep.depend();
-      mwcDataUpdate(self);
-    });
+  attached() {
+    this.__mwcFirstRun = true;
+    this.autorun(this.tracker);
+    this.autorun(mwcDataUpdate.bind(null,this));
   },
-  detatched:function(){
-    if (this.__mwcDataComputation) {
-      this.__mwcDataComputation.stop();
-      this.__mwcDataComputation = null;
-    }
-    if (this.__mwcComputation) {
-      this.__mwcComputation.stop();
-      this.__mwcComputation = null;
-    }
-    this.__handles.forEach(function(h){
+  detatched() {
+    _.each(this.__computations,(c)=>{
+      c.stop();
+    });
+    this.__computations = [];
+    this.__handles.forEach((h)=>{
+      h.stop();
+    });
+    this.__mwcBin.forEach((h)=>{
       h.stop();
     });
 
   },
-  subscribe:function(){
-    self = this;
-    var handle = Meteor.subscribe.apply(null,arguments);
-    var handles = _.clone(self.__handles);
-    handles.push(handle);
-    self.set("__handles",handles);
+  cPush(p,val) {
+    let prop = _.clone(this[p]);
+    prop.push(val);
+    this.set(p,prop);
+  },
+  guard(f) {
+    if (Meteor.isServer || !Tracker.currentComputation) {
+      return f();
+    }
 
-    Tracker.autorun(function(c) {
-      try{
-        if (handle.ready()) {
-          self.set("__handles",_.reject(_.clone(self.__handles),function(h){
-            return h.subscriptionId = handle.subscriptionId;
-          }));
-          c.stop();
-        }
-      }
-      catch(err){
-        console.log(err);
-      }
+    let dep = new Tracker.Dependency()
+      dep.depend();
 
+    let value, newValue;
+    Tracker.autorun(comp => {
+      newValue = f();
+      if (!comp.firstRun && !EJSON.equals(newValue, value)) {
+        dep.changed();
+      }
+      value = EJSON.clone(newValue);
     });
+
+    return newValue;
+
+  },
+  autorun(f){
+    const cb = (c)=> {
+      if(!_.find(this.__computationsIds,(_id)=>{
+        return _id == c._id;
+      })){
+        this.cPush("__computationsIds",c._id);
+        this.cPush("__computations",c);
+      }
+      f.bind(this)(c);
+    }
+    Tracker.autorun(cb.bind(this));
+
+  },
+  _removeSubs(val){
+    const handles = _.reject(_.clone(this.__handles),(h)=>{
+      if(h.subscriptionId = val.subscriptionId){
+        return true;
+      }
+    });
+    this.cPush('__mwcBin',val);
+    this.set("__handles",handles);
+
+  },
+  subscribe() {
+    const handle = Meteor.subscribe.apply(null,arguments);
+    this.cPush("__handles",handle);
+    this._subsReady();
+    const afterSub = (c)=>{
+      if (handle.ready()) {
+        this._removeSubs(handle);
+        this._subsReady();
+        c.stop();
+
+      }
+    }
+    this.autorun(afterSub.bind(this));
+
     return handle;
   },
-  _subsReady : function(__h) {
-    var isReady =  _.every(__h, function(sub) {
+  _subsReady(__h) {
+    const isReady =  _.every(this.__handles, (sub)=> {
       return sub && sub.ready();
     });
-
+    this.set("subsReady",isReady);
     return isReady;
   },
 
-  getMeteorData:function(){
+  getMeteorData(){
   },
-  tracker:function(){
+  tracker(){
 
-  }//
+  }
 };
-function mwcDataUpdate(element) {
-  var data = element.getMeteorData();
+const mwcDataUpdate = (element)=> {
+  const data = element.getMeteorData();
   //  if(element.getMeteorData()){
   //  console.log("Use tracker instead of getMeteorData");
   //  }
@@ -93,7 +125,7 @@ function mwcDataUpdate(element) {
     return;
   }
 
-  Tracker.afterFlush(function() {
+  Tracker.afterFlush(()=> {
     element.setData(data);
   });
 }

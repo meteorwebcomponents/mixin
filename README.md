@@ -66,9 +66,41 @@ Polymer({
 ...
 ```
 
+#### autorun
+
+Simple tracker autorun with computations stored in __computation property. Use this to use Meteor reactivity outside tracker method(tracker method runs first when attached).
+
+```js
+this.autorun(function(){console.log(FlowRouter.getParam('param'))});
+```
+#### guard
+
+Guard limits reactivity. It triggers the enclosing computation only if the return variable changes.
+
+In the following example tracker gets triggered only if dataOpt changes. This prevents unecessary triggers.
+  
+```js
+  ...
+  tracker(){
+    const data = this.guard(params=>{
+      const projectId = FlowRouter.getParam('project');
+      const queryId = FlowRouter.getQueryParam('query');
+      let dataOpt = {
+        queryId:queryId,
+        projectId:projectId
+      };
+      return dataOpt;
+    });
+    this.subscribe('sd_data',data);
+  },
+  ...
+```
+
 #### subscribe
 
 This is similar to Blaze's template level subscriptions.
+All subscription handles can be find in __handles property until they are ready. When they are ready handles are pushed to __mwcBin property.
+All subscriptions are stopped when the components gets detatched
 If you want to subscribe a collection from a polymer components use
 ```js
   this.subscribe("collectionName"); 
@@ -89,6 +121,7 @@ Loading Subscriptions..
 ...
 
 ```
+
 
 #### getMeteorData
 
@@ -115,6 +148,7 @@ Polymer({
 </template>
 ...
 ```
+
 ### Examples
 
 #### With FlowRouter and `mwc:layout`
@@ -164,4 +198,5 @@ Polymer({
 [MWC Layout](https://github.com/meteorwebcomponents/layout) - polymer layout renderer
 
 [mwc flowrouter demo](https://github.com/aruntk/kickstart-meteor-polymer) - mwc demo with flowrouter as the default router
+
 
