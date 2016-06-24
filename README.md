@@ -77,20 +77,16 @@ this.autorun(function(){console.log(FlowRouter.getParam('param'))});
 
 Guard limits reactivity. It triggers the enclosing computation only if the return variable changes.
 
-In the following example tracker gets triggered only if dataOpt changes. This prevents unecessary triggers.
+In the following example tracker gets triggered only if return object changes. Which mean if p == false then tracker method subscription will not be triggered even if qp changes.
   
 ```js
   ...
   tracker(){
     const data = this.guard(params=>{
-      const projectId = FlowRouter.getParam('project');
-      const queryId = FlowRouter.getQueryParam('query');
-      let dataOpt = {
-        queryId:queryId,
-        projectId:projectId
-      };
-      return dataOpt;
-    });
+      const p = FlowRouter.getParam('p');
+      const qp = FlowRouter.getQueryParam('qp');
+      return p ? {p:p,qp:qp} : {} ;
+    }); // data = 
     this.subscribe('sd_data',data);
   },
   ...
