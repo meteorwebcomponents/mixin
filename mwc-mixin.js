@@ -4,12 +4,12 @@ mwcMixin = {
     subsReady:{type:Boolean,notify:true,value:true},
 
     mwcData:Object,
-    __handles:{type:Array,value:[]},
-    __computations:{type:Array,value:[]},
-    __computationsIds:{type:Array,value:[]},
+    __mwcHandles:{type:Array,value:[]},
+    __mwcComputations:{type:Array,value:[]},
+    __mwcComputationsIds:{type:Array,value:[]},
     __mwcBin:{type:Array,value:[]}
   },
-  setData(data){
+  _mwcSetData(data){
     this.set("mwcData",data);
   },
   attached() {
@@ -18,11 +18,11 @@ mwcMixin = {
     this.autorun(mwcDataUpdate.bind(null,this));
   },
   detatched() {
-    _.each(this.__computations,(c)=>{
+    _.each(this.__mwcComputations,(c)=>{
       c.stop();
     });
-    this.__computations = [];
-    this.__handles.forEach((h)=>{
+    this.__mwcComputations = [];
+    this.__mwcHandles.forEach((h)=>{
       h.stop();
     });
     this.__mwcBin.forEach((h)=>{
@@ -30,7 +30,7 @@ mwcMixin = {
     });
 
   },
-  cPush(p,val) {
+  _mwcPush(p,val) {
     let prop = _.clone(this[p]);
     prop.push(val);
     this.set(p,prop);
@@ -57,11 +57,11 @@ mwcMixin = {
   },
   autorun(f){
     const cb = (c)=> {
-      if(!_.find(this.__computationsIds,(_id)=>{
+      if(!_.find(this.__mwcComputationsIds,(_id)=>{
         return _id == c._id;
       })){
-        this.cPush("__computationsIds",c._id);
-        this.cPush("__computations",c);
+        this._mwcPush("__mwcComputationsIds",c._id);
+        this._mwcPush("__mwcComputations",c);
       }
       f.bind(this)(c);
     }
@@ -69,18 +69,18 @@ mwcMixin = {
 
   },
   _removeSubs(val){
-    const handles = _.reject(_.clone(this.__handles),(h)=>{
+    const handles = _.reject(_.clone(this.__mwcHandles),(h)=>{
       if(h.subscriptionId = val.subscriptionId){
         return true;
       }
     });
-    this.cPush('__mwcBin',val);
-    this.set("__handles",handles);
+    this._mwcPush('__mwcBin',val);
+    this.set("__mwcHandles",handles);
 
   },
   subscribe() {
     const handle = Meteor.subscribe.apply(null,arguments);
-    this.cPush("__handles",handle);
+    this._mwcPush("__mwcHandles",handle);
     this._subsReady();
     const afterSub = (c)=>{
       if (handle.ready()) {
@@ -94,8 +94,8 @@ mwcMixin = {
 
     return handle;
   },
-  _subsReady(__h) {
-    const isReady =  _.every(this.__handles, (sub)=> {
+  _subsReady(h) {
+    const isReady =  _.every(this.__mwcHandles, (sub)=> {
       return sub && sub.ready();
     });
     this.set("subsReady",isReady);
@@ -119,12 +119,12 @@ const mwcDataUpdate = (element)=> {
 
   if (element.__mwcFirstRun) {
     element.__mwcFirstRun = false;
-    element.setData(data);
+    element._mwcSetData(data);
     return;
   }
 
   Tracker.afterFlush(()=> {
-    element.setData(data);
+    element._mwcSetData(data);
   });
 }
 
