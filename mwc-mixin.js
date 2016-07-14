@@ -17,7 +17,7 @@ mwcMixin = {
     this.autorun(this.tracker);
     this.autorun(mwcDataUpdate.bind(null,this));
   },
-  detatched() {
+  detached() {
     _.each(this.__mwcComputations,(c)=>{
       c.stop();
     });
