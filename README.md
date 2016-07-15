@@ -183,6 +183,8 @@ Polymer({
 });
 
 ```
+[A full fledged example using tracker,getMeteorData and guard](https://jsfiddle.net/cy11v4y7/3/)
+
 [Advanced Example](https://github.com/HedCET/TorrentAlert)
 
 ##Related Projects
