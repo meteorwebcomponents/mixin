@@ -195,6 +195,6 @@ Polymer({
 
 [MWC Layout](https://github.com/meteorwebcomponents/layout) - polymer layout renderer
 
-[mwc flowrouter demo](https://github.com/aruntk/kickstart-meteor-polymer) - mwc demo with flowrouter as the default router
+[MWC Flowrouter Demo](https://github.com/aruntk/kickstart-meteor-polymer) - mwc demo with flowrouter as the default router
 
-
+[MWC App Route Demo](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route) - mwc demo with polymer app route as the default router.
