@@ -9,15 +9,48 @@ mwcMixin = {
     __mwcComputationsIds:{type:Array,value:[]},
     __mwcBin:{type:Array,value:[]}
   },
+  trackers:[],
   _mwcSetData(data){
     this.set("mwcData",data);
   },
+  beforeRegister(){
+    this.__mwcDeps = {};
+    this.observers = this.observers || [];
+    for(let i = 0;i < this.trackers.length;i++){
+      const tracker = this.trackers[i];
+      const sections = tracker.split(/[\(,\)]+/);
+      const input =  sections[1];
+      const cb = sections[0];
+      const r_id = `__mwc_${Random.id(10)}`;
+      const dep = new Tracker.Dependency;
+      this.__mwcDeps[tracker] = {_id:r_id,dep:dep,cb:cb};
+      this[r_id] = (...arg)=>{
+        this.__mwcDeps[tracker].arg = arg;
+        this.__mwcDeps[tracker].dep.changed();
+      }
+
+      this.observers.push(`${r_id}(${input})`);
+    }
+  },
   attached() {
     this.__mwcFirstRun = true;
+    for(i in this.__mwcDeps){
+      const tracker = this.__mwcDeps[i];
+      const obFn = (c)=>{
+        tracker.dep.depend();
+        this[tracker.cb].apply(this,tracker.arg);
+      }
+      this.autorun(obFn.bind(null,this));
+    }
     this.autorun(this.tracker);
     this.autorun(mwcDataUpdate.bind(null,this));
   },
   detached() {
+    for(i in this.__mwcDeps){
+      const tracker = this.__mwcDeps[i];
+      delete this[tracker[_id]];
+    }
+    delete this.__mwcDeps;
     _.each(this.__mwcComputations,(c)=>{
       c.stop();
     });
@@ -65,7 +98,7 @@ mwcMixin = {
       }
       f.bind(this)(c);
     }
-    Tracker.autorun(cb.bind(this));
+    return Tracker.autorun(cb.bind(this));
 
   },
   _removeSubs(val){
