@@ -66,6 +66,7 @@ Polymer({
 
 })
 ```
+For Trackers demo - https://github.com/aruntk/kickstart-meteor-polymer-with-app-route
 
 ### Methods
 
