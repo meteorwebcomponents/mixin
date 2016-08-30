@@ -42,6 +42,31 @@ Polymer({
 })
 ```
 
+### Trackers
+
+Trackers is observers with meteor's reactivity.
+observers defined in trackers array gets rerun when 
+1. Observing properties change.
+2. Reactive data inside function change.
+
+```js
+Polymer({
+  is:"custom-element",
+  behaviors:[mwcMixin],
+  properties{
+    propA:String
+  },
+  trackers:["changeStatus(propA)"],
+  ready(){
+   this.propA = "Meteor Status is "
+  },
+  changeStatus:function(p){
+    console.log(p,Meteor.status().status); //runs every time propA/meteor status changes.
+  }
+
+})
+```
+
 ### Methods
 
 #### tracker
@@ -68,6 +93,7 @@ Polymer({
 </template>
 ...
 ```
+
 
 #### autorun
 
@@ -148,6 +174,7 @@ Polymer({
 ...
 ```
 
+
 ### Examples
 
 #### With FlowRouter and `mwc:layout`
@@ -201,3 +228,4 @@ Polymer({
 [MWC Flowrouter Demo](https://github.com/aruntk/kickstart-meteor-polymer) - mwc demo with flowrouter as the default router
 
 [MWC App Route Demo](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route) - mwc demo with polymer app route as the default router.
+
