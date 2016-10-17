@@ -22,33 +22,33 @@ mwcMixin = {
       const input =  sections[1];
       const cb = sections[0];
       const r_id = `__mwc_${Random.id(10)}`;
-      const dep = new Tracker.Dependency;
+      const dep = new Tracker.Dependency();
       this.__mwcDeps[tracker] = {_id:r_id,dep:dep,cb:cb};
       this[r_id] = (...arg)=>{
         this.__mwcDeps[tracker].arg = arg;
         this.__mwcDeps[tracker].dep.changed();
-      }
+      };
 
       this.observers.push(`${r_id}(${input})`);
     }
   },
   attached() {
     this.__mwcFirstRun = true;
-    for(i in this.__mwcDeps){
+    for(let i in this.__mwcDeps){
       const tracker = this.__mwcDeps[i];
       const obFn = (c)=>{
         tracker.dep.depend();
         this[tracker.cb].apply(this,tracker.arg);
-      }
+      };
       this.autorun(obFn.bind(null,this));
     }
     this.autorun(this.tracker);
     this.autorun(mwcDataUpdate.bind(null,this));
   },
   detached() {
-    for(i in this.__mwcDeps){
+    for(let i in this.__mwcDeps){
       const tracker = this.__mwcDeps[i];
-      delete this[tracker[_id]];
+      delete this[tracker[`_id`]];
     }
     delete this.__mwcDeps;
     _.each(this.__mwcComputations,(c)=>{
@@ -73,7 +73,7 @@ mwcMixin = {
       return f();
     }
 
-    let dep = new Tracker.Dependency()
+    let dep = new Tracker.Dependency();
     dep.depend();
 
     let value, newValue;
@@ -97,13 +97,13 @@ mwcMixin = {
         this._mwcPush("__mwcComputations",c);
       }
       f.bind(this)(c);
-    }
+    };
     return Tracker.autorun(cb.bind(this));
 
   },
   _removeSubs(val){
     const handles = _.reject(_.clone(this.__mwcHandles),(h)=>{
-      if(h.subscriptionId = val.subscriptionId){
+      if(h.subscriptionId == val.subscriptionId){
         return true;
       }
     });
@@ -122,7 +122,7 @@ mwcMixin = {
         c.stop();
 
       }
-    }
+    };
     this.autorun(afterSub.bind(this));
 
     return handle;
@@ -159,5 +159,5 @@ const mwcDataUpdate = (element)=> {
   Tracker.afterFlush(()=> {
     element._mwcSetData(data);
   });
-}
+};
 
