@@ -7,7 +7,7 @@ ejson@1.0.12
 meteor@1.1.16
 modules@0.6.5
 modules-runtime@0.6.5
-mwc:mixin@1.0.28
+mwc:mixin@1.0.29
 promise@0.7.3
 random@1.0.10
 underscore@1.0.9
