@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:mixin',
-  version: '1.0.30',
+  version: '1.0.31',
   summary: 'Reactive Data Mixin For Polymer',
   git: "https://github.com/meteorwebcomponents/mixin.git",
   documentation: "README.md"
