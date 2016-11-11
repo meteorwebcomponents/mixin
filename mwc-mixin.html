@@ -1,4 +1,5 @@
 <script>
+'use strict';
 
 var _tracker = require('meteor/tracker');
 
@@ -95,8 +96,9 @@ mwcMixin = {
 
         var obFn = function obFn() {
           _this2.__mwcDeps[i].dep = _this2.__mwcDeps[i].dep || new _tracker.Tracker.Dependency();
+          var args = _this2.__mwcDeps[i].args || [];
           _this2.__mwcDeps[i].dep.depend();
-          _this2[_this2.__mwcDeps[i].cb].apply(_this2, _toConsumableArray(_this2.__mwcDeps[i].args));
+          _this2[_this2.__mwcDeps[i].cb].apply(_this2, _toConsumableArray(args));
           _this2.__mwcDeps = _.clone(_this2.__mwcDeps);
         };
         _this2.autorun(obFn.bind(_this2));

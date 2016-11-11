@@ -69,8 +69,9 @@ mwcMixin = {
     for (const i of Object.keys(this.__mwcDeps)) {
       const obFn = () => {
         this.__mwcDeps[i].dep = this.__mwcDeps[i].dep || new Tracker.Dependency();
+        const args = this.__mwcDeps[i].args || [];
         this.__mwcDeps[i].dep.depend();
-        this[this.__mwcDeps[i].cb](...this.__mwcDeps[i].args);
+        this[this.__mwcDeps[i].cb](...args);
         this.__mwcDeps = _.clone(this.__mwcDeps);
       };
       this.autorun(obFn.bind(this));
