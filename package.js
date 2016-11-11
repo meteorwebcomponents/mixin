@@ -1,21 +1,19 @@
 Package.describe({
   name: 'mwc:mixin',
-  version: '1.0.31',
+  version: '1.0.32',
   summary: 'Reactive Data Mixin For Polymer',
-  git: "https://github.com/meteorwebcomponents/mixin.git",
-  documentation: "README.md"
+  git: 'https://github.com/meteorwebcomponents/mixin.git',
+  documentation: 'README.md',
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom("1.2");
+  api.versionsFrom('1.2');
   api.use('ecmascript');
   api.use('ejson');
   api.use('random');
   api.use('tracker');
 
-  api.addFiles("mwc-mixin.js", ["client"]);
+  api.addFiles('mwc-mixin.js', ['client']);
 
-  api.export("mwcMixin");
+  api.export('mwcMixin');
 });
-
-
