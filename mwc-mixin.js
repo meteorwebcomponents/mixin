@@ -2,6 +2,7 @@ import { Tracker } from 'meteor/tracker';
 import { Random } from 'meteor/random';
 
 const mwcDataUpdate = (element) => {
+  const el = element;
   const data = element.getMeteorData();
   //  if(element.getMeteorData()){
   //  console.log('Use tracker instead of getMeteorData');
@@ -10,14 +11,14 @@ const mwcDataUpdate = (element) => {
     return;
   }
 
-  if (element.__mwcFirstRun) {
-    element.__mwcFirstRun = false;
-    element._mwcSetData(data);
+  if (el.__mwcFirstRun) {
+    el.__mwcFirstRun = false;
+    el._mwcSetData(data);
     return;
   }
 
   Tracker.afterFlush(() => {
-    element._mwcSetData(data);
+    el._mwcSetData(data);
   });
 };
 
@@ -37,7 +38,6 @@ mwcMixin = {
   },
   beforeRegister() {
     const mwcDeps = {};
-    const observers = this.observers || [];
     const trackers = this.trackers;
     for (let i = 0; i < trackers.length; i += 1) {
       const tracker = trackers[i];
@@ -49,32 +49,33 @@ mwcMixin = {
         _id: rId,
         cb,
       };
-      mwcDeps[tracker] = obj;
-      const _trObFn = function (...args) {
-        const dep = obj;
-        dep.dep = this.__mwcDeps[tracker].dep || new Tracker.Dependency();
-        dep.args = args;
-        this.__mwcDeps[tracker] = dep;
+      const dep = new Tracker.Dependency();
+      const _trObFn = function (...args) { // eslint-disable-line func-names
+        const _obj = obj;
+        _obj.args = args;
+        this.__mwcDeps[tracker] = _obj;
         this.__mwcDeps[tracker] = _.clone(this.__mwcDeps[tracker]);
-        dep.dep.changed();
+        dep.changed();
       };
+      const obFn = function () { // eslint-disable-line func-names
+        const _obj = this.__mwcDeps[tracker];
+        const args = _obj.args || [];
+        dep.depend();
+        this[_obj.cb](...args);
+      };
+      obj.obFn = obFn;
+      mwcDeps[tracker] = obj;
+
       this[rId] = _trObFn;
-      observers.push(`${rId}(${input})`);
+      this._addComplexObserverEffect(`${rId}(${input})`);
     }
-    this.observers = observers;
     this.__mwcDeps = mwcDeps;
   },
   attached() {
     this.__mwcFirstRun = true;
-    for (const i of Object.keys(this.__mwcDeps)) {
-      const obFn = () => {
-        this.__mwcDeps[i].dep = this.__mwcDeps[i].dep || new Tracker.Dependency();
-        const args = this.__mwcDeps[i].args || [];
-        this.__mwcDeps[i].dep.depend();
-        this[this.__mwcDeps[i].cb](...args);
-        this.__mwcDeps = _.clone(this.__mwcDeps);
-      };
-      this.autorun(obFn.bind(this));
+    for (const tracker of Object.keys(this.__mwcDeps)) {
+      const _obj = this.__mwcDeps[tracker];
+      this.autorun(_obj.obFn.bind(this));
     }
     this.autorun(this.tracker);
     this.autorun(mwcDataUpdate.bind(null, this));
