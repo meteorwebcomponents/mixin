@@ -3,6 +3,10 @@
 
 var _tracker2 = require('meteor/tracker');
 
+var _underscore = require('meteor/underscore');
+
+var _ejson = require('meteor/ejson');
+
 var _random = require('meteor/random');
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -10,9 +14,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var mwcDataUpdate = function mwcDataUpdate(element) {
   var el = element;
   var data = element.getMeteorData();
-  //  if(element.getMeteorData()){
-  //  console.log('Use tracker instead of getMeteorData');
-  //  }
+
   if (!data) {
     return;
   }
@@ -69,7 +71,8 @@ mwcMixin = {
 
         _obj.args = args;
         this.__mwcDeps[tracker] = _obj;
-        this.__mwcDeps[tracker] = _.clone(this.__mwcDeps[tracker]);
+        this.__mwcDeps[tracker] = _underscore._.clone(this.__mwcDeps[tracker]);
+        this.__mwcDeps = _underscore._.clone(this.__mwcDeps);
         dep.changed();
       };
       var obFn = function obFn() {
@@ -123,7 +126,7 @@ mwcMixin = {
     this.autorun(mwcDataUpdate.bind(null, this));
   },
   detached: function detached() {
-    _.each(this.__mwcComputations, function (c) {
+    _underscore._.each(this.__mwcComputations, function (c) {
       c.stop();
     });
     this.__mwcComputations = [];
@@ -135,7 +138,7 @@ mwcMixin = {
     });
   },
   _mwcPush: function _mwcPush(p, val) {
-    var prop = _.clone(this[p]);
+    var prop = _underscore._.clone(this[p]);
     prop.push(val);
     this.set(p, prop);
   },
@@ -151,10 +154,10 @@ mwcMixin = {
     var newValue = void 0;
     _tracker2.Tracker.autorun(function (comp) {
       newValue = f();
-      if (!comp.firstRun && !EJSON.equals(newValue, value)) {
+      if (!comp.firstRun && !_ejson.EJSON.equals(newValue, value)) {
         dep.changed();
       }
-      value = EJSON.clone(newValue);
+      value = _ejson.EJSON.clone(newValue);
     });
     return newValue;
   },
@@ -162,7 +165,7 @@ mwcMixin = {
     var _this2 = this;
 
     var cb = function cb(c) {
-      if (!_.find(_this2.__mwcComputationsIds, function (_id) {
+      if (!_underscore._.find(_this2.__mwcComputationsIds, function (_id) {
         return _id === c._id;
       })) {
         _this2._mwcPush('__mwcComputationsIds', c._id);
@@ -173,7 +176,7 @@ mwcMixin = {
     return _tracker2.Tracker.autorun(cb.bind(this));
   },
   _removeSubs: function _removeSubs(val) {
-    var handles = _.reject(_.clone(this.__mwcHandles), function (h) {
+    var handles = _underscore._.reject(_underscore._.clone(this.__mwcHandles), function (h) {
       if (h.subscriptionId === val.subscriptionId) {
         return true;
       }
@@ -203,7 +206,7 @@ mwcMixin = {
     return handle;
   },
   _subsReady: function _subsReady() {
-    var isReady = _.every(this.__mwcHandles, function (sub) {
+    var isReady = _underscore._.every(this.__mwcHandles, function (sub) {
       return sub && sub.ready();
     });
     this.set('subsReady', isReady);

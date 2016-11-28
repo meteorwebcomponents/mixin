@@ -1,12 +1,12 @@
 import { Tracker } from 'meteor/tracker';
+import { _ } from 'meteor/underscore';
+import { EJSON } from 'meteor/ejson';
 import { Random } from 'meteor/random';
 
 const mwcDataUpdate = (element) => {
   const el = element;
   const data = element.getMeteorData();
-  //  if(element.getMeteorData()){
-  //  console.log('Use tracker instead of getMeteorData');
-  //  }
+
   if (!data) {
     return;
   }
@@ -55,6 +55,7 @@ mwcMixin = {
         _obj.args = args;
         this.__mwcDeps[tracker] = _obj;
         this.__mwcDeps[tracker] = _.clone(this.__mwcDeps[tracker]);
+        this.__mwcDeps = _.clone(this.__mwcDeps);
         dep.changed();
       };
       const obFn = function () { // eslint-disable-line func-names
@@ -160,4 +161,3 @@ mwcMixin = {
   tracker() {
   },
 };
-
