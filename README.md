@@ -218,7 +218,15 @@ Polymer({
 
 [Advanced Example](https://github.com/HedCET/TorrentAlert)
 
-##Related Projects
+### Like it?
+
+:star: this repo
+
+### Found a bug?
+
+Raise an issue!
+
+### Related Projects
 
 [MWC Synthesis](https://github.com/meteorwebcomponents/synthesis) - Compiler for polymer/webcomponents in meteor.
 
