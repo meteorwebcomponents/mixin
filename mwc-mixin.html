@@ -86,7 +86,7 @@ mwcMixin = {
       mwcDeps[tracker] = obj;
 
       _this[rId] = _trObFn;
-      _this._createPropertyObserver(input, rId);
+      _this._createMethodObserver(rId + '(' + input + ')');
     };
 
     for (var i = 0; i < trackers.length; i += 1) {

@@ -68,7 +68,7 @@ mwcMixin = {
       mwcDeps[tracker] = obj;
 
       this[rId] = _trObFn;
-      this._createPropertyObserver(input, rId);
+      this._createMethodObserver(`${rId}(${input})`);
     }
     this.__mwcDeps = mwcDeps;
   },
