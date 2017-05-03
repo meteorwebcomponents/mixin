@@ -17,13 +17,13 @@ MwcMixin is a reactive meteor data source for polymer elements. Objective is to 
 Add `mwc:mixin` package to your Meteor App.
 
 ```sh
-meteor add mwc:mixin
+meteor add mwc:mixin@2.0.0-beta.2
 
 ```
 ### Method 2 - Using bower
 
 ```sh
-bower install mwc-mixin --save
+bower install mwc-mixin#2.0.0-beta.2 --save
 ```
 import mwc-mixin.html file.
 
