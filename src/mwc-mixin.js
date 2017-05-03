@@ -22,7 +22,7 @@ const mwcDataUpdate = (element) => {
   });
 };
 
-export const MwcMixin = parent => class extends parent {
+MwcMixin = parent => class extends parent {
   constructor() {
     super();
     const mwcDeps = {};
