@@ -17,13 +17,13 @@ MwcMixin is a reactive meteor data source for polymer elements. Objective is to 
 Add `mwc:mixin` package to your Meteor App.
 
 ```sh
-meteor add mwc:mixin
+meteor add mwc:mixin@2.0.0-beta.2
 
 ```
 ### Method 2 - Using bower
 
 ```sh
-bower install mwc-mixin --save
+bower install mwc-mixin#2.0.0-beta.2 --save
 ```
 import mwc-mixin.html file.
 
@@ -49,10 +49,12 @@ class MyElement extends MwcMixin(Polymer.Element){
 
 If you have hybrid components as well use mixin version 1.x and use as 
 
+> Note that in mixin 1.x behavior name is mwcMixin. In 2.x I've changed it to MwcMixin (since its a class name).
+
 ```js
 // for polymer v2 elements
 
-class MyElement extends Polymer.mixinBehaviors([MyBehavior, MwcMixin], Polymer.Element) {
+class MyElement extends Polymer.mixinBehaviors([MyBehavior, mwcMixin], Polymer.Element) {
 ...
 ```
 
@@ -62,7 +64,7 @@ class MyElement extends Polymer.mixinBehaviors([MyBehavior, MwcMixin], Polymer.E
 
 Polymer({
   is: 'my-element',
-  behaviors: [MyBehavior, MwcMixin],
+  behaviors: [MyBehavior, mwcMixin],
 ...
 });
 
