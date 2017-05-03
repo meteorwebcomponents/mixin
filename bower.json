@@ -11,6 +11,6 @@
       "type": "git",
       "url": "https://github.com/meteorwebcomponents/mixin.git"
     },
-    "version": "2.0.0-beta.2",
+    "version": "2.0.0-beta.3",
     "ignore":["mwc-mixin.js","package.js"]
 }
