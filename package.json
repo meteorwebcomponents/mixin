@@ -1,0 +1,37 @@
+{
+  "name": "mwc-mixin",
+  "version": "2.0.0-beta",
+  "description": "Meteor Polymer Data Mixin",
+  "main": "src/mwc-mixin.js",
+  "scripts": {
+    "compile": "babel --presets es2015 -d dist/ src/",
+    "pack": "npm run compile && npm run meteor_publish",
+    "meteor_publish": "meteor publish && git add -A && git commit -m 'versions' && git push",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meteorwebcomponents/mixin.git"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "xo": "^0.17.0"
+  },
+  "keywords": [
+    "meteor",
+    "polymer",
+    "mixin",
+    "webcomponents",
+    "data"
+  ],
+  "author": "Arun Kumar T K (@aruntk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meteorwebcomponents/mixin/issues"
+  },
+  "homepage": "https://github.com/meteorwebcomponents/mixin#readme",
+  "xo": {
+    "space": true
+  }
+}
