@@ -13,7 +13,7 @@ Package.onUse(function(api) {
   api.use('random');
   api.use('tracker');
 
-  api.addFiles('mwc-mixin.js', ['client']);
+  api.addFiles('src/mwc-mixin.js', ['client']);
 
   api.export('mwcMixin');
 });
