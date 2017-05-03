@@ -229,7 +229,15 @@ class MyElement extends MwcMixin(Polymer.Element){
 
 [MWC App Route Demo](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route/tree/2.0-preview) - mwc demo with polymer app route as the default router.
 
-## Related Projects
+### Like it?
+
+:star: this repo
+
+### Found a bug?
+
+Raise an issue!
+
+### Related Projects
 
 [MWC Synthesis](https://github.com/meteorwebcomponents/synthesis) - Compiler for polymer/webcomponents in meteor.
 
