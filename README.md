@@ -49,10 +49,12 @@ class MyElement extends MwcMixin(Polymer.Element){
 
 If you have hybrid components as well use mixin version 1.x and use as 
 
+> Note that in mixin 1.x behavior name is mwcMixin. In 2.x I've changed it to MwcMixin (since its a class name).
+
 ```js
 // for polymer v2 elements
 
-class MyElement extends Polymer.mixinBehaviors([MyBehavior, MwcMixin], Polymer.Element) {
+class MyElement extends Polymer.mixinBehaviors([MyBehavior, mwcMixin], Polymer.Element) {
 ...
 ```
 
@@ -62,7 +64,7 @@ class MyElement extends Polymer.mixinBehaviors([MyBehavior, MwcMixin], Polymer.E
 
 Polymer({
   is: 'my-element',
-  behaviors: [MyBehavior, MwcMixin],
+  behaviors: [MyBehavior, mwcMixin],
 ...
 });
 
