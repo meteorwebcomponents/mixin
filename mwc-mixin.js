@@ -22,23 +22,11 @@ const mwcDataUpdate = (element) => {
   });
 };
 
-mwcMixin = {
-  properties: {
-    subsReady: { type: Boolean, notify: true, value: true },
-    mwcData: Object,
-    __mwcHandles: { type: Array, value: [] },
-    __mwcPush: { type: Array, value: [] },
-    __mwcComputations: { type: Array, value: [] },
-    __mwcComputationsIds: { type: Array, value: [] },
-    __mwcBin: { type: Array, value: [] },
-  },
-  trackers: [],
-  _mwcSetData(data) {
-    this.set('mwcData', data);
-  },
-  beforeRegister() {
+export const MwcMixin = parent => class extends parent {
+  constructor() {
+    super();
     const mwcDeps = {};
-    const trackers = this.trackers;
+    const trackers = this.trackers || [];
     for (let i = 0; i < trackers.length; i += 1) {
       const tracker = trackers[i];
       const sections = tracker.split(/[()]+/);
@@ -71,8 +59,24 @@ mwcMixin = {
       this._createMethodObserver(`${rId}(${input})`);
     }
     this.__mwcDeps = mwcDeps;
-  },
-  attached() {
+  }
+
+  static get properties() {
+    return {
+      subsReady: { type: Boolean, notify: true, value: true },
+      mwcData: Object,
+      __mwcHandles: { type: Array, value: [] },
+      __mwcPush: { type: Array, value: [] },
+      __mwcComputations: { type: Array, value: [] },
+      __mwcComputationsIds: { type: Array, value: [] },
+      __mwcBin: { type: Array, value: [] },
+    }
+  }
+  _mwcSetData(data) {
+    this.set('mwcData', data);
+  }
+  connectedCallback() {
+    super.connectedCallback();
     this.__mwcFirstRun = true;
     for (const tracker of Object.keys(this.__mwcDeps)) {
       const _obj = this.__mwcDeps[tracker];
@@ -80,8 +84,9 @@ mwcMixin = {
     }
     this.autorun(this.tracker);
     this.autorun(mwcDataUpdate.bind(null, this));
-  },
-  detached() {
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
     _.each(this.__mwcComputations, (c) => {
       c.stop();
     });
@@ -92,12 +97,12 @@ mwcMixin = {
     this.__mwcBin.forEach((h) => {
       h.stop();
     });
-  },
+  }
   _mwcPush(p, val) {
     const prop = _.clone(this[p]);
     prop.push(val);
     this.set(p, prop);
-  },
+  }
   guard(f) {
     if (Meteor.isServer || !Tracker.currentComputation) {
       return f();
@@ -116,7 +121,7 @@ mwcMixin = {
       value = EJSON.clone(newValue);
     });
     return newValue;
-  },
+  }
   autorun(f) {
     const cb = (c) => {
       if (!_.find(this.__mwcComputationsIds, _id => _id === c._id)) {
@@ -126,7 +131,7 @@ mwcMixin = {
       f.bind(this)(c);
     };
     return Tracker.autorun(cb.bind(this));
-  },
+  }
   _removeSubs(val) {
     const handles = _.reject(_.clone(this.__mwcHandles), (h) => {
       if (h.subscriptionId === val.subscriptionId) {
@@ -136,7 +141,7 @@ mwcMixin = {
     });
     this._mwcPush('__mwcBin', val);
     this.set('__mwcHandles', handles);
-  },
+  }
   subscribe(...args) {
     const handle = Meteor.subscribe.apply(null, args);
     this._mwcPush('__mwcHandles', handle);
@@ -150,14 +155,18 @@ mwcMixin = {
     };
     this.autorun(afterSub.bind(this));
     return handle;
-  },
+  }
   _subsReady() {
     const isReady = _.every(this.__mwcHandles, sub => sub && sub.ready());
     this.set('subsReady', isReady);
     return isReady;
-  },
+  }
   getMeteorData() {
-  },
+  }
   tracker() {
-  },
+  }
 };
+
+if (typeof window !== "undefined") {
+  window.MwcMixin = MwcMixin;
+}
