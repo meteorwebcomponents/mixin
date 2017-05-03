@@ -5,13 +5,11 @@
 # Mixin
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/aruntk/meteorwebcomponents?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Donate](https://dantheman827.github.io/images/donate-button.svg)](https://www.paypal.me/arunkumartk)
+Polymer 1.x users refer https://github.com/meteorwebcomponents/mixin/tree/1.x
 
 ## What is mwc mixin?
 
-mwcMixin is a reactive meteor data source for polymer elements. Objective is to use use the reactive meteor collections inside polymer elements.
-
+MwcMixin is a reactive meteor data source for polymer elements. Objective is to use use the reactive meteor collections/variables inside polymer elements.
 
 ## Installation
 
@@ -20,8 +18,8 @@ Add `mwc:mixin` package to your Meteor App.
 
 ```sh
 meteor add mwc:mixin
-```
 
+```
 ### Method 2 - Using bower
 
 ```sh
@@ -30,43 +28,76 @@ bower install mwc-mixin --save
 import mwc-mixin.html file.
 
 
+
 ## How to use it ?
 
-Add `mwcMixin` behavior to your component behaviors. ie. `behaviors:[mwcMixin]`
-
+Use `MwcMixin` to extend your class
 ```js
-Polymer({
-  is: "custom-elements",
-  behaviors:[mwcMixin],
+
+import { MwcMixin } from 'meteor/mwc:mixin' // disable if mixin is added using bower
+class MyElement extends MwcMixin(Polymer.Element){
+  constructor() {
+    super(); // important
+  }
+  static get is() { return "my-element" }
+  connectedCallback() {
+    super.connectedCallback(); // important
+  }
 ...
-})
+}
 ```
 
+If you have hybrid components as well use mixin version 1.x and use as 
+
+```js
+// for polymer v2 elements
+
+class MyElement extends Polymer.mixinBehaviors([MyBehavior, MwcMixin], Polymer.Element) {
+...
+```
+
+
+```js
+// hybrid elements
+
+Polymer({
+  is: 'my-element',
+  behaviors: [MyBehavior, MwcMixin],
+...
+});
+
+
+```
 ### Trackers
 
-Trackers is observers with meteor's reactivity.
-observers defined in trackers array gets rerun when 
+Trackers are polymer observers with meteor's reactivity.
+observers defined in trackers array get rerun when
 1. Observing properties change.
 2. Reactive data inside function change.
 
 ```js
-Polymer({
-  is:"custom-element",
-  behaviors:[mwcMixin],
-  properties{
-    propA:String
-  },
-  trackers:["changeStatus(propA)"],
-  ready(){
-   this.propA = "Meteor Status is "
-  },
-  changeStatus:function(p){
-    console.log(p,Meteor.status().status); //runs every time propA/meteor status changes.
+import { MwcMixin } from 'meteor/mwc:mixin' // disable if mixin is added using bower
+class MyElement extends MwcMixin(Polymer.Element){
+  constructor() {
+    super(); // important
   }
-
-})
+  static get is() { return "my-element" }
+  connectedCallback() {
+    super.connectedCallback(); // important
+    this.propA = "Meteor Status is "
+  }
+  static get properties() {
+    return { propA:String };
+  }
+  get trackers() {
+    { return ["changeStatus(propA)"] };
+  }
+  changeStatus:function(p){
+    console.log(p,Meteor.status().status); // runs every time propA/meteor status changes.
+  }
+};
+window.customElements.define(MyElement.is, MyElement);
 ```
-For Trackers demo - https://github.com/aruntk/kickstart-meteor-polymer-with-app-route
 
 ### Methods
 
@@ -75,17 +106,24 @@ For Trackers demo - https://github.com/aruntk/kickstart-meteor-polymer-with-app-
 mwcMixin tracker runs first while attaching element and gets destroyed when the element gets detatched. Its just like executing something inside a Meteor tracker. You can set this.anyProperty reactively.
 
 ```js
-Polymer({
-  is:"custom-element",
-  behaviors:[mwcMixin],
-  properties{
-    status:String
-  },
-  tracker:function(){
+import { MwcMixin } from 'meteor/mwc:mixin' // disable if mixin is added using bower
+
+class MyElement extends MwcMixin(Polymer.Element){
+  constructor() {
+    super(); // important
+  }
+  static get is() { return "my-element" }
+  connectedCallback() {
+    super.connectedCallback(); // important
+    this.propA = "Meteor Status is "
+  }
+  static get properties() {
+    return { status: String };
+  }
+  tracker(){
     this.status = Meteor.status().status; //runs every time status changes.
   }
-
-})
+};
 ```
 ```html
 ...
@@ -96,6 +134,7 @@ Polymer({
 ```
 
 
+
 #### autorun
 
 Simple tracker autorun with computations stored in __computation property. Use this to use Meteor reactivity outside tracker method(tracker method runs first when attached).
@@ -103,6 +142,7 @@ Simple tracker autorun with computations stored in __computation property. Use t
 ```js
 this.autorun(function(){console.log(FlowRouter.getParam('param'))});
 ```
+
 #### guard
 
 Guard limits reactivity. It triggers the enclosing computation only if the return variable changes.
@@ -112,15 +152,16 @@ In the following example tracker gets triggered only if return object changes. W
 ```js
   ...
   tracker(){
-    const data = this.guard(params=>{
+    const data = this.guard( params => {
       const p = FlowRouter.getParam('p');
       const qp = FlowRouter.getQueryParam('qp');
-      return p ? {p:p,qp:qp} : {} ;
-    }); // data = 
-    this.subscribe('sd_data',data);
-  },
+      return p ? { p: p, qp: qp } : {} ;
+    }); // data changes only if p changes. thus limits reactivity.
+    this.subscribe('sd_data', data);
+  }
   ...
 ```
+
 
 #### subscribe
 
@@ -149,6 +190,7 @@ Loading Subscriptions..
 ```
 
 
+
 #### getMeteorData
 
 getMeteorData is tracker with one additional functionality. return value of the getMeteorData function gets set as mwcData. 
@@ -157,14 +199,20 @@ getMeteorData is tracker with one additional functionality. return value of the 
 `{{mwcData.collectionName}}`
 
 ```js
-Polymer({
-  is:"custom-element",
-  behaviors:[mwcMixin],
-  getMeteorData:function(){
+import { MwcMixin } from 'meteor/mwc:mixin' // disable if mixin is added using bower
+
+class MyElement extends MwcMixin(Polymer.Element){
+  constructor() {
+    super(); // important
+  }
+  static get is() { return "my-element" }
+  connectedCallback() {
+    super.connectedCallback(); // important
+  }
+  getMeteorData(){
     return {status :  Meteor.status().status}; //runs every time status changes.
   }
-
-})
+};
 
 ```
 ```html
@@ -176,49 +224,12 @@ Polymer({
 ```
 
 
+
 ### Examples
 
-#### With FlowRouter and `mwc:layout`
+[MWC App Route Demo](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route/tree/2.0-preview) - mwc demo with polymer app route as the default router.
 
-```js
-//Router
-FlowRouter.route("/post/:_id", {
-    name: 'post-view',
-    action: function(params, queryParams) {
-        mwcLayout.render('main', {
-            "main": "post-view"
-        });
-    }
-});
-
-// Inside post-view element
-
-Polymer({
-    is: "post-view",
-    behaviors:[mwcMixin], /***** IMPORTANT *****/
-    properties:{post:Object,comment:Object},
-
-    tracker: function() {
-        
-        var postId = FlowRouter.getParam('_id'); // getParam is reactive.
-        
-        this.subscribe("post"); //all posts
-        this.subscribe("comment",{"post_id":postId}); //comments of the current post only.
-        
-        this.set("post", post.find({
-                "_id":postId
-            }).fetch());
-        this.set("comment",comment.find().fetch());
-        };
-    }
-});
-
-```
-[A full fledged example using tracker,getMeteorData and guard](https://jsfiddle.net/cy11v4y7/4/)
-
-[Advanced Example](https://github.com/HedCET/TorrentAlert)
-
-##Related Projects
+## Related Projects
 
 [MWC Synthesis](https://github.com/meteorwebcomponents/synthesis) - Compiler for polymer/webcomponents in meteor.
 
@@ -228,5 +239,5 @@ Polymer({
 
 [MWC Flowrouter Demo](https://github.com/aruntk/kickstart-meteor-polymer) - mwc demo with flowrouter as the default router
 
-[MWC App Route Demo](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route) - mwc demo with polymer app route as the default router.
+
 
